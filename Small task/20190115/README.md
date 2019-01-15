@@ -1,4 +1,4 @@
-# 數據分析
+數據分析
 ====================
 在免費的app中，篩選平均用戶評分值為 0 & 5 的app在依照他的主要類型做計數，分析其關係。
 
@@ -23,9 +23,3 @@
 	* ipadSc_urls.num：顯示的屏幕截圖數量
 	* lang.num：支持的語言數量
 	* vpp_lic：啟用基於Vpp設備的許可
-
-* appleStore_description.csv
-	* id：應用程序ID
-	* track_name：應用程序名稱
-	* size_bytes：內存大小（以字節為單位）
-	* app_desc：應用程序說明
