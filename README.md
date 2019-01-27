@@ -16,3 +16,4 @@ Data Visualization with Python
 	* [20190115](https://github.com/jasonSU85323/UTaipei_DataScience/tree/master/Small%20task/20190115)：數值分析
 	* [20190116](https://github.com/jasonSU85323/UTaipei_DataScience/tree/master/Small%20task/20190116)：文字雲
 	* [20190117](https://github.com/jasonSU85323/UTaipei_DataScience/tree/master/Small%20task/20190117)：文次探勘(未完)
+* [Youtube analysis](https://github.com/jasonSU85323/UTaipei_DataScience/tree/master/Youtube%20analysis)：youtube推薦系統分析
