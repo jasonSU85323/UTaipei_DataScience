@@ -1,0 +1,194 @@
+﻿※ youtube 推薦系統分析		
+
+index：
+USvideos.csv		-> 原始檔
+US_category_id.csv	-> label表
+newtest.csv		-> 整理後
+
+
+1	video id		視頻ID
+2	trending date		
+3	title			視訊名稱			*
+4	channel title		頻道名稱			*
+5	category id		類別ID				*
+6	publish time		上傳日期
+7	tags			標籤
+8	views			觀看次數			*
+9	likes			喜歡				*
+10	dislikes		不喜歡				*
+11	comment count		評論數				*
+12	thumbnail link		縮略圖鏈接
+13	comments disabled	評論已禁用(TRUE/FLSE)
+14	ratings disabled	評級(TRUE/FLSE)
+15	video error or removed	視頻錯誤或已刪除(TRUE/FLSE)
+16	description		描述				*
+
+
+研究方向
+1.views和like dislike comment數有沒有成正比
+2.title tag 中的關鍵字
+3.description中有否YouTube的連結，有得話是否影響views
+4.trending的一段時間區間中的影片種類
+
+
+
+$3 "," $4 "," $5 "," $8 "," $9 "," $10 "," $11 "," $16
+
+video id, trending date, title, channel title, category id, publish time, tags, views, likes, dislikes, comment count, thumbnail link, comments disabled, ratings disabled, video error or removed, description
+
+--------------------------
+echo title,channel title,category id,views,likes,dislikes,comment count,description >> newtest.csv
+cat USvideos.csv | awk -F, '{if($5 ~ /^[0-9]+$/ && $5 < 45 ) print $3 "," $4 "," $5 "," $8 "," $9 "," $10 "," $11 "," $16;}' >> newtest.csv
+cat newtest.csv | awk -F, '{print $3}' | sort | uniq -c
+   2116 1
+   5679 10
+    819 15
+   1809 17
+    353 19
+    312 2
+    777 20
+   2897 22
+   3313 23
+   9266 24
+   2138 25
+   3995 26
+   1564 27
+   2180 28
+     53 29
+     57 43
+---------------------------
+1. video id:字母 數字 -  _
+2. trending date:數字 .
+3. title:不限
+4. channel title:不限
+5. category id:小於44的數字
+6. publish date: 格式xxxx-xx-xxTxx:xx
+7. tag:不限
+8. views:只探討大於1萬view s的影片
+9. like:數字
+10.dislike:數字
+11.comment:數字
+12.thumbnail: URL
+13~15: true or false
+16.description:不限
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------
+echo video id, trending date, title, channel title, category id, publish time, tags, views, likes, dislikes, comment count, thumbnail link, comments disabled, ratings disabled, video error or removed, description >> one.csv
+cat USvideos.csv | awk -F, '{if( $5 ~ /^[0-9]+$/ && $5 < 45 && $8 ~ /^[0-9]+$/ && $8 > 10000 ) print $1 "," $2 "," $3 "," $4 "," $5 "," $6 "," $7 "," $8 "," $9 "," $10 "," $11 "," $12 "," $13 "," $14 "," $15 "," $16 "\"";}' >> one.csv
+
+字母 數字 -  _										[1]等號呢?
+$ cat one.csv | awk -F, '{print $2}' | sort | uniq -c					[2]17.14.11 ~ 18.14.06
+      1  trending date
+    173 17.01.12
+    175 17.02.12
+    174 17.03.12
+    173 17.04.12
+    172 17.05.12
+    173 17.06.12
+    170 17.07.12
+    (. . . .)
+    178 18.30.05
+    172 18.31.01
+    191 18.31.03
+    178 18.31.05
+
+					
+不限											[3]
+
+不限											[4]
+
+$ cat one.csv | awk -F, '{print $5}' | sort | uniq -c					[5]
+      1  category id
+   2089 1
+   5629 10
+    803 15
+   1744 17
+    347 19
+    299 2
+    765 20
+   2834 22
+   3289 23
+   9084 24
+   1984 25
+   3960 26
+   1550 27
+   2095 28
+     40 29
+     57 43
+
+
+$ cat one.csv | awk -F, '{print $6}' | awk -F'-' '{print $1}' | sort | uniq -c		[6]最早還有2006!?
+      1  publish time
+      1 2006
+     11 2008
+      6 2009
+     19 2010
+     25 2011
+     15 2012
+     30 2013
+     27 2014
+     14 2015
+     15 2016
+   9108 2017
+  27298 2018
+
+不限											[7]
+
+$ cat one.csv | awk -F, '{ if( $8 > 10000 ) print "ok"}' | sort | uniq -c		[8]
+
+  36569 ok
+$ cat one.csv | wc -l
+36570
+$ cat one.csv | awk -F, '{print $6}' | awk -F'.' '{print $2}' | sort | uniq -c
+      1
+  36569 000Z
+
+$ cat one.csv | awk -F, '{ if($9 ~ /^[0-9]+$/) print "ok"}' | sort | uniq -c		[9~11]
+  36569 ok
+$ cat one.csv | awk -F, '{ if($10 ~ /^[0-9]+$/) print "ok"}' | sort | uniq -c
+  36569 ok
+$ cat one.csv | awk -F, '{ if($11 ~ /^[0-9]+$/) print "ok"}' | sort | uniq -c
+  36569 ok
+$ cat one.csv | wc -l
+36570
+
+$ cat one.csv | awk -F, '{print $12}' | awk -F: '{print $1}' | sort | uniq -c		[12]
+      1  thumbnail link
+  36569 https
+$ cat one.csv | awk -F, '{print $12}' | awk -F'vi' '{print $1}' | sort | uniq -c
+      1  thumbnail link
+  36569 https://i.ytimg.com/
+
+$ cat one.csv | awk -F, '{print $13}' | sort | uniq -c					[13]
+      1  comments disabled
+  36006 False
+    563 True
+$ cat one.csv | awk -F, '{print $14}' | sort | uniq -c					[14]
+      1  ratings disabled
+  36437 False
+    132 True
+$ cat one.csv | awk -F, '{print $15}' | sort | uniq -c					[15]
+      1  video error or removed
+  36548 False
+     21 True
+
+不限											[16]
+
+
+
+
+
+
+
